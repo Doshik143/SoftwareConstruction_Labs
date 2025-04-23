@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="LightElementNode.cs" />
     <Compile Include="LightNode.cs" />
+    <Compile Include="LightNodeExtensions.cs" />
     <Compile Include="LightTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
