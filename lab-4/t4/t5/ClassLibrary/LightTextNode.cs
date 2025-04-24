@@ -6,21 +6,13 @@ namespace ClassLibrary
     {
         private string _text;
 
-        public LightTextNode(string text)
-        {
-            _text = text;
-        }
+        public LightTextNode(string text) => _text = text;
 
         public override string OuterHTML => _text;
         public override string InnerHTML => _text;
-        public override void AddEventListener(string eventType, Action handler)
-        {
-            //TextNodeDoesn`tSupportEvents
-        }
+        public override int MemorySize => _text.Length * 2 + 16;
 
-        public override void TriggerEvent(string eventType)
-        {
-            //TextNodeDoesn`tSupportEvents
-        }
+        public override void AddEventListener(string eventType, Action handler) { }
+        public override void TriggerEvent(string eventType) { }
     }
 }

@@ -23,6 +23,21 @@ namespace ClassLibrary
             _eventListeners = new Dictionary<string, List<Action>>();
         }
 
+        public override int MemorySize
+        {
+            get
+            {
+                int size = 0;
+                size += _tagName.Length * 2 + _displayType.Length * 2 + _closingType.Length * 2;
+                size += _cssClasses.Capacity * 8;
+                foreach (var cls in _cssClasses) size += cls.Length * 2;
+                size += _children.Capacity * 8;
+                foreach (var child in _children) size += child.MemorySize;
+                size += _eventListeners.Count * 16;
+                return size;
+            }
+        }
+
         public override void AddEventListener(string eventType, Action handler)
         {
             if (!_eventListeners.ContainsKey(eventType))
