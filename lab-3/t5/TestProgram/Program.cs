@@ -1,68 +1,75 @@
 ﻿using ClassLibrary;
 using System;
+using System.IO;
+using System.Net;
 
 namespace TestProgram
 {
-    public class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            //CreateButton
-            var button = new LightElementNode("button", "inline", "double");
-            button.AddCssClass("btn-primary");
-            button.AddChild(new LightTextNode("press me"));
-            //AddingEventHandlers
-            button.AddEventListener("click", () => {
-                Console.WriteLine(" *Button Has Been Pressed!*");
-            });
-
-            button.AddEventListener("mouseover", () => {
-                Console.WriteLine(" →Mouse Cursor Is On The Button!←");
-            });
-
-            //CreateLink
-            var link = new LightElementNode("a", "inline", "double");
-            link.AddCssClass("nav-link");
-            link.AddChild(new LightTextNode("link"));
-
-            link.AddEventListener("click", () => {
-                Console.WriteLine(" *Link Was Clicked!*");
-            });
             //CreatingContainer
             var container = new LightElementNode("div", "block", "double");
-            container.AddCssClass("container");
-            container.AddChild(button);
-            container.AddChild(link);
-            //HTML_Output
-            Console.WriteLine("\t↓-------Generated_HTML-------↓\n");
-            Console.WriteLine(container.OuterHTML);
-            //SimulationOfEvents
-            Console.WriteLine("\n\t↓-------Simulation_Of_Events-------↓\n");
-            button.TriggerEvent("click");
-            button.TriggerEvent("mouseover");
-            link.TriggerEvent("click");
-            //CreatingListWithEventHandlers
-            var list = new LightElementNode("ul", "block", "double");
-            for (int i = 1; i <= 3; i++)
+            container.AddCssClass("gallery-container");
+            //AddingLocalImage
+            try
             {
-                var item = new LightElementNode("li", "block", "double");
-                item.AddChild(new LightTextNode($"Item {i}"));
+                Console.WriteLine("\t↓-------Trying_To_Load_Local_IMG-------↓\n");
+                var localImage = new LightImageNode("image.jpg", new FileSystemImageLoader());
+                Console.WriteLine($"Added Local IMG: {localImage.GetSourceInfo()}");
 
-                int current = i;
-                item.AddEventListener("click", () => {
-                    Console.WriteLine($"An Item Is Selected {current}");
+                localImage.AddEventListener("click", () => {
+                    Console.WriteLine("Local Image Clicked!");
                 });
-                list.AddChild(item);
-            }
 
-            Console.WriteLine("\n\t↓-------Events_For_List-------↓");
-            foreach (var child in list.GetChildren())
+                container.AddChild(localImage);
+                Console.WriteLine($"IMG Size: {localImage.MemorySize} byte");
+            }
+            catch (FileNotFoundException ex)
             {
-                if (child is LightElementNode element)
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Current Directory: {Directory.GetCurrentDirectory()}");
+                Console.WriteLine("List Of Available Files:");
+                foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory()))
                 {
-                    element.TriggerEvent("click");
+                    Console.WriteLine($"- {Path.GetFileName(file)}");
                 }
             }
+            //AddingNetworkImage
+            try
+            {
+                Console.WriteLine("\n\t↓-------Trying_To_Download_Network_IMG-------↓\n");
+                var webImage = new LightImageNode("https://example.com/image.jpg", new NetworkImageLoader());
+                Console.WriteLine($"Added Network Image: {webImage.GetSourceInfo()}");
+
+                webImage.AddEventListener("mouseover", () => {
+                    Console.WriteLine("Mouse Cursor Is Placed On Network IMG Shown!");
+                });
+
+                container.AddChild(webImage);
+            }
+            catch (WebException ex)
+            {
+                Console.WriteLine($"Download Error: {ex.Message}");
+            }
+            //Output_HTML
+            Console.WriteLine("\n\t↓-------Generated_HTML-------↓\n");
+            Console.WriteLine(container.OuterHTML);
+            //SimulationOfEvents
+            Console.WriteLine("\n\t↓-------Simulation Of Events-------↓\n");
+            foreach (var child in container.GetChildren())
+            {
+                if (child is LightImageNode img)
+                {
+                    img.TriggerEvent("click");
+                    img.TriggerEvent("mouseover");
+                }
+            }
+            //SavingResult
+            File.WriteAllText("output.html", container.OuterHTML);
+            Console.WriteLine("\n >Result Saved To File. 'output.html'");
+
             Console.ReadLine();
         }
     }
