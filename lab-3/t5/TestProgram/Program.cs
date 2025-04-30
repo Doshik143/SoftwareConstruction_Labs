@@ -1,59 +1,75 @@
 ﻿using ClassLibrary;
 using System;
+using System.IO;
+using System.Net;
 
 namespace TestProgram
 {
-    public class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            //CreatieListOf 3 Items
-            var ul = new LightElementNode("ul", "block", "double");
-            ul.AddCssClass("list");
-
-            for (int i = 1; i <= 3; i++)
+            //CreatingContainer
+            var container = new LightElementNode("div", "block", "double");
+            container.AddCssClass("gallery-container");
+            //AddingLocalImage
+            try
             {
-                var li = new LightElementNode("li", "block", "double");
-                li.AddChild(new LightTextNode($"Item {i}"));
-                ul.AddChild(li);
+                Console.WriteLine("\t↓-------Trying_To_Load_Local_IMG-------↓\n");
+                var localImage = new LightImageNode("image.jpg", new FileSystemImageLoader());
+                Console.WriteLine($"Added Local IMG: {localImage.GetSourceInfo()}");
+
+                localImage.AddEventListener("click", () => {
+                    Console.WriteLine("Local Image Clicked!");
+                });
+
+                container.AddChild(localImage);
+                Console.WriteLine($"IMG Size: {localImage.MemorySize} byte");
             }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Current Directory: {Directory.GetCurrentDirectory()}");
+                Console.WriteLine("List Of Available Files:");
+                foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory()))
+                {
+                    Console.WriteLine($"- {Path.GetFileName(file)}");
+                }
+            }
+            //AddingNetworkImage
+            try
+            {
+                Console.WriteLine("\n\t↓-------Trying_To_Download_Network_IMG-------↓\n");
+                var webImage = new LightImageNode("https://example.com/image.jpg", new NetworkImageLoader());
+                Console.WriteLine($"Added Network Image: {webImage.GetSourceInfo()}");
 
-            //CreateHeader
-            var h1 = new LightElementNode("h1", "block", "double");
-            h1.AddChild(new LightTextNode("MyList"));
+                webImage.AddEventListener("mouseover", () => {
+                    Console.WriteLine("Mouse Cursor Is Placed On Network IMG Shown!");
+                });
 
-            //CreateContainer
-            var div = new LightElementNode("div", "block", "double");
-            div.AddCssClass("container");
-            div.AddChild(h1);
-            div.AddChild(ul);
+                container.AddChild(webImage);
+            }
+            catch (WebException ex)
+            {
+                Console.WriteLine($"Download Error: {ex.Message}");
+            }
+            //Output_HTML
+            Console.WriteLine("\n\t↓-------Generated_HTML-------↓\n");
+            Console.WriteLine(container.OuterHTML);
+            //SimulationOfEvents
+            Console.WriteLine("\n\t↓-------Simulation Of Events-------↓\n");
+            foreach (var child in container.GetChildren())
+            {
+                if (child is LightImageNode img)
+                {
+                    img.TriggerEvent("click");
+                    img.TriggerEvent("mouseover");
+                }
+            }
+            //SavingResult
+            File.WriteAllText("output.html", container.OuterHTML);
+            Console.WriteLine("\n >Result Saved To File. 'output.html'");
 
-            //HTML Output
-            Console.WriteLine("\nOuterHTML Of Container: ");
-            Console.WriteLine(div.OuterHTML);
-
-            Console.WriteLine("\nInnerHTML Of Container: ");
-            Console.WriteLine(div.InnerHTML);
-
-            Console.WriteLine("\nOuterHTML Of List: ");
-            Console.WriteLine(ul.OuterHTML);
-
-            //CreateTable
-            var table = new LightElementNode("table", "block", "double")
-                .AddCssClass("data-table")
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Name")))
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Age"))))
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("Tom")))
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("24"))));
-
-            Console.WriteLine("\nTable: ");
-            Console.WriteLine(table.OuterHTML);
             Console.ReadLine();
         }
     }
