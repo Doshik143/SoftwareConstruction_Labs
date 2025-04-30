@@ -1,4 +1,6 @@
-﻿namespace ClassLibrary
+﻿using System;
+
+namespace ClassLibrary
 {
     public class LightTextNode : LightNode
     {
@@ -11,5 +13,14 @@
 
         public override string OuterHTML => _text;
         public override string InnerHTML => _text;
+        public override void AddEventListener(string eventType, Action handler)
+        {
+            //TextNodeDoesn`tSupportEvents
+        }
+
+        public override void TriggerEvent(string eventType)
+        {
+            //TextNodeDoesn`tSupportEvents
+        }
     }
 }

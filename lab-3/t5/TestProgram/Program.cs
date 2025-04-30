@@ -7,53 +7,62 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            //CreatieListOf 3 Items
-            var ul = new LightElementNode("ul", "block", "double");
-            ul.AddCssClass("list");
+            //CreateButton
+            var button = new LightElementNode("button", "inline", "double");
+            button.AddCssClass("btn-primary");
+            button.AddChild(new LightTextNode("press me"));
+            //AddingEventHandlers
+            button.AddEventListener("click", () => {
+                Console.WriteLine(" *Button Has Been Pressed!*");
+            });
 
+            button.AddEventListener("mouseover", () => {
+                Console.WriteLine(" →Mouse Cursor Is On The Button!←");
+            });
+
+            //CreateLink
+            var link = new LightElementNode("a", "inline", "double");
+            link.AddCssClass("nav-link");
+            link.AddChild(new LightTextNode("link"));
+
+            link.AddEventListener("click", () => {
+                Console.WriteLine(" *Link Was Clicked!*");
+            });
+            //CreatingContainer
+            var container = new LightElementNode("div", "block", "double");
+            container.AddCssClass("container");
+            container.AddChild(button);
+            container.AddChild(link);
+            //HTML_Output
+            Console.WriteLine("\t↓-------Generated_HTML-------↓\n");
+            Console.WriteLine(container.OuterHTML);
+            //SimulationOfEvents
+            Console.WriteLine("\n\t↓-------Simulation_Of_Events-------↓\n");
+            button.TriggerEvent("click");
+            button.TriggerEvent("mouseover");
+            link.TriggerEvent("click");
+            //CreatingListWithEventHandlers
+            var list = new LightElementNode("ul", "block", "double");
             for (int i = 1; i <= 3; i++)
             {
-                var li = new LightElementNode("li", "block", "double");
-                li.AddChild(new LightTextNode($"Item {i}"));
-                ul.AddChild(li);
+                var item = new LightElementNode("li", "block", "double");
+                item.AddChild(new LightTextNode($"Item {i}"));
+
+                int current = i;
+                item.AddEventListener("click", () => {
+                    Console.WriteLine($"An Item Is Selected {current}");
+                });
+                list.AddChild(item);
             }
 
-            //CreateHeader
-            var h1 = new LightElementNode("h1", "block", "double");
-            h1.AddChild(new LightTextNode("MyList"));
-
-            //CreateContainer
-            var div = new LightElementNode("div", "block", "double");
-            div.AddCssClass("container");
-            div.AddChild(h1);
-            div.AddChild(ul);
-
-            //HTML Output
-            Console.WriteLine("\nOuterHTML Of Container: ");
-            Console.WriteLine(div.OuterHTML);
-
-            Console.WriteLine("\nInnerHTML Of Container: ");
-            Console.WriteLine(div.InnerHTML);
-
-            Console.WriteLine("\nOuterHTML Of List: ");
-            Console.WriteLine(ul.OuterHTML);
-
-            //CreateTable
-            var table = new LightElementNode("table", "block", "double")
-                .AddCssClass("data-table")
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Name")))
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Age"))))
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("Tom")))
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("24"))));
-
-            Console.WriteLine("\nTable: ");
-            Console.WriteLine(table.OuterHTML);
+            Console.WriteLine("\n\t↓-------Events_For_List-------↓");
+            foreach (var child in list.GetChildren())
+            {
+                if (child is LightElementNode element)
+                {
+                    element.TriggerEvent("click");
+                }
+            }
             Console.ReadLine();
         }
     }
