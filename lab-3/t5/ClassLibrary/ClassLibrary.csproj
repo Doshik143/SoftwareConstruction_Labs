@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddChildCommand.cs" />
     <Compile Include="BreadthFirstIterator.cs" />
     <Compile Include="DepthFirstIterator.cs" />
+    <Compile Include="ICommand.cs" />
     <Compile Include="ILightNodeIterator.cs" />
     <Compile Include="LifecycleElement.cs" />
     <Compile Include="LightElementNode.cs" />
