@@ -5,15 +5,14 @@ namespace ClassLibrary
 {
     public class LightElementNode : LightNode
     {
-        private string _tagName;
         private string _displayType; // "block"|"inline"
         private string _closingType; // "single"|"double"
         private List<string> _cssClasses;
         private List<LightNode> _children;
 
         public LightElementNode(string tagName, string displayType, string closingType)
+        : base(tagName)
         {
-            _tagName = tagName;
             _displayType = displayType;
             _closingType = closingType;
             _cssClasses = new List<string>();
@@ -23,6 +22,10 @@ namespace ClassLibrary
         public LightElementNode AddChild(LightNode child)
         {
             _children.Add(child);
+            if (this is LifecycleElement lifecycleParent && child is LifecycleElement lifecycleChild)
+            {
+                lifecycleChild.OnInserted();
+            }
             return this;
         }
 
@@ -37,11 +40,12 @@ namespace ClassLibrary
             get
             {
                 StringBuilder sb = new StringBuilder();
-                sb.Append($"<{_tagName}");
+                sb.Append($"<{TagName}");
 
                 if (_cssClasses.Count > 0)
                 {
-                    sb.Append($" class=\"{string.Join(" ", _cssClasses)}\"");
+                    var allClasses = new List<string>(_cssClasses);
+                    sb.Append($" class=\"{string.Join(" ", allClasses)}\"");
                 }
 
                 if (_closingType == "single")
@@ -52,9 +56,8 @@ namespace ClassLibrary
                 {
                     sb.Append(">");
                     sb.Append(InnerHTML);
-                    sb.Append($"</{_tagName}>");
+                    sb.Append($"</{TagName}>");
                 }
-
                 return sb.ToString();
             }
         }
