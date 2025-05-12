@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LifecycleElement.cs" />
     <Compile Include="LightElementNode.cs" />
     <Compile Include="LightNode.cs" />
+    <Compile Include="LightNodeWithLifecycle.cs" />
     <Compile Include="LightTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
