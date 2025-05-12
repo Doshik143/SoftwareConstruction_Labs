@@ -11,5 +11,10 @@
 
         public override string OuterHTML => _text;
         public override string InnerHTML => _text;
+
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

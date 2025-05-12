@@ -44,8 +44,10 @@
     <Compile Include="AddChildCommand.cs" />
     <Compile Include="BreadthFirstIterator.cs" />
     <Compile Include="DepthFirstIterator.cs" />
+    <Compile Include="ElementCounterVisitor.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ILightNodeIterator.cs" />
+    <Compile Include="IVisitor.cs" />
     <Compile Include="LifecycleElement.cs" />
     <Compile Include="LightElementNode.cs" />
     <Compile Include="LightNode.cs" />
