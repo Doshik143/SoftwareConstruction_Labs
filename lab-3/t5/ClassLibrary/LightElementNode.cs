@@ -58,18 +58,35 @@ namespace ClassLibrary
             }
         }
 
+        protected IElementState _state = new NormalState();
+
+        public void ChangeState(IElementState newState)
+        {
+            _state = newState;
+        }
+
         public override string OuterHTML
         {
             get
             {
                 OnRender();
 
+                string stateClass = "";
+                if (_state != null)
+                {
+                    stateClass = _state.GetStateClass();
+                }
+
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"<{TagName}");
 
-                if (_cssClasses.Count > 0)
+                if (_cssClasses.Count > 0 || !string.IsNullOrEmpty(stateClass))
                 {
                     var allClasses = new List<string>(_cssClasses);
+                    if (!string.IsNullOrEmpty(stateClass))
+                    {
+                        allClasses.Add(stateClass);
+                    }
                     sb.Append($" class=\"{string.Join(" ", allClasses)}\"");
                 }
 
