@@ -44,6 +44,11 @@ namespace ClassLibrary
             Console.WriteLine($"Рендеринг елемента <{TagName}>");
         }
 
+        public void RemoveChild(LightNode child)
+        {
+            _children.Remove(child);
+        }
+
         public override string OuterHTML
         {
             get
