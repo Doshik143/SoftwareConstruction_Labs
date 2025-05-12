@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ClassLibrary
@@ -9,6 +10,9 @@ namespace ClassLibrary
         private string _closingType; // "single"|"double"
         private List<string> _cssClasses;
         private List<LightNode> _children;
+
+        public int ChildCount => _children.Count;
+        public LightNode GetChild(int index) => _children[index];
 
         public LightElementNode(string tagName, string displayType, string closingType)
         : base(tagName)
@@ -35,10 +39,17 @@ namespace ClassLibrary
             return this;
         }
 
+        protected virtual void OnRender()
+        {
+            Console.WriteLine($"Рендеринг елемента <{TagName}>");
+        }
+
         public override string OuterHTML
         {
             get
             {
+                OnRender();
+
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"<{TagName}");
 
