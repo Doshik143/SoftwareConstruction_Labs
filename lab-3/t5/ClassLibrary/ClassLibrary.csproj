@@ -41,11 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveState.cs" />
     <Compile Include="AddChildCommand.cs" />
     <Compile Include="BreadthFirstIterator.cs" />
     <Compile Include="DepthFirstIterator.cs" />
     <Compile Include="ElementCounterVisitor.cs" />
+    <Compile Include="FocusState.cs" />
+    <Compile Include="HoverState.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="IElementState.cs" />
     <Compile Include="ILightNodeIterator.cs" />
     <Compile Include="IVisitor.cs" />
     <Compile Include="LifecycleElement.cs" />
@@ -53,6 +57,7 @@
     <Compile Include="LightNode.cs" />
     <Compile Include="LightNodeWithLifecycle.cs" />
     <Compile Include="LightTextNode.cs" />
+    <Compile Include="NormalState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
