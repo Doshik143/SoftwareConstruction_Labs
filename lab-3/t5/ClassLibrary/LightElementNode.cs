@@ -49,6 +49,15 @@ namespace ClassLibrary
             _children.Remove(child);
         }
 
+        public override void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
+            foreach (var child in _children)
+            {
+                child.Accept(visitor);
+            }
+        }
+
         public override string OuterHTML
         {
             get
