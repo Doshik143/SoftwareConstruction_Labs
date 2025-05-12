@@ -1,5 +1,6 @@
 ﻿using ClassLibrary;
 using System;
+using System.Text;
 
 namespace TestProgram
 {
@@ -7,53 +8,71 @@ namespace TestProgram
     {
         static void Main(string[] args)
         {
-            //CreatieListOf 3 Items
-            var ul = new LightElementNode("ul", "block", "double");
-            ul.AddCssClass("list");
+            Console.OutputEncoding = Encoding.Unicode;
+            Console.InputEncoding = Encoding.Unicode;
 
-            for (int i = 1; i <= 3; i++)
+            //CreatingTree
+            var root = new LifecycleElement("div", "block", "double")
+           .AddCssClass("container")
+           .AddChild(new LifecycleElement("h1", "block", "double")
+               .AddChild(new LightTextNode("Заголовок")))
+           .AddChild(new LifecycleElement("ul", "block", "double")
+               .AddChild(new LifecycleElement("li", "block", "double")
+                   .AddChild(new LightTextNode("Пункт 1")))
+               .AddChild(new LifecycleElement("li", "block", "double")
+                   .AddChild(new LightTextNode("Пункт 2"))));
+            //Iterators
+            Console.WriteLine("\nОбхід в глибину:");
+            var depthIterator = new DepthFirstIterator(root);
+            while (depthIterator.HasNext())
             {
-                var li = new LightElementNode("li", "block", "double");
-                li.AddChild(new LightTextNode($"Item {i}"));
-                ul.AddChild(li);
+                Console.WriteLine(depthIterator.Next().GetType().Name);
             }
 
-            //CreateHeader
-            var h1 = new LightElementNode("h1", "block", "double");
-            h1.AddChild(new LightTextNode("MyList"));
+            Console.WriteLine("\nОбхід в ширину:");
+            var breadthIterator = new BreadthFirstIterator(root);
+            while (breadthIterator.HasNext())
+            {
+                Console.WriteLine(breadthIterator.Next().GetType().Name);
+            }
 
-            //CreateContainer
-            var div = new LightElementNode("div", "block", "double");
-            div.AddCssClass("container");
-            div.AddChild(h1);
-            div.AddChild(ul);
+            //Visitor
+            var visitor = new ElementCounterVisitor();
+            root.Accept(visitor);
+            Console.WriteLine($"\nЕлементів: {visitor.ElementCount}, Текстових вузлів: {visitor.TextNodeCount}");
+            
+            //Command
+            var commandManager = new CommandManager();
+            var newElement = new LifecycleElement("p", "block", "double")
+                .AddChild(new LightTextNode("Новий абзац"));
 
-            //HTML Output
-            Console.WriteLine("\nOuterHTML Of Container: ");
-            Console.WriteLine(div.OuterHTML);
+            commandManager.Execute(new AddChildCommand((LightElementNode)root, newElement));
+            Console.WriteLine("\nПісля додавання:");
+            Console.WriteLine(root.OuterHTML);
 
-            Console.WriteLine("\nInnerHTML Of Container: ");
-            Console.WriteLine(div.InnerHTML);
+            commandManager.Undo();
+            Console.WriteLine("\nПісля скасування:");
+            Console.WriteLine(root.OuterHTML);
 
-            Console.WriteLine("\nOuterHTML Of List: ");
-            Console.WriteLine(ul.OuterHTML);
+            //State
+            var button = new LifecycleElement("button", "inline", "double")
+            .AddChild(new LightTextNode("Натисни мене"));
 
-            //CreateTable
-            var table = new LightElementNode("table", "block", "double")
-                .AddCssClass("data-table")
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Name")))
-                    .AddChild(new LightElementNode("th", "block", "double")
-                        .AddChild(new LightTextNode("Age"))))
-                .AddChild(new LightElementNode("tr", "block", "double")
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("Tom")))
-                    .AddChild(new LightElementNode("td", "block", "double")
-                        .AddChild(new LightTextNode("24"))));
+            Console.WriteLine("\nПочатковий стан:");
+            Console.WriteLine(button.OuterHTML);
 
-            Console.WriteLine("\nTable: ");
-            Console.WriteLine(table.OuterHTML);
+            Console.WriteLine("\nСтан наведення:");
+            button.ChangeState(new HoverState());
+            Console.WriteLine(button.OuterHTML);
+
+            Console.WriteLine("\nАктивний стан:");
+            button.ChangeState(new ActiveState());
+            Console.WriteLine(button.OuterHTML);
+
+            Console.WriteLine("\nСтан фокусу:");
+            button.ChangeState(new FocusState());
+            Console.WriteLine(button.OuterHTML);
+
             Console.ReadLine();
         }
     }

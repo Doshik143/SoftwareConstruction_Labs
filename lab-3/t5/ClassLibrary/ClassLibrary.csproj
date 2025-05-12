@@ -44,6 +44,7 @@
     <Compile Include="ActiveState.cs" />
     <Compile Include="AddChildCommand.cs" />
     <Compile Include="BreadthFirstIterator.cs" />
+    <Compile Include="CommandManager.cs" />
     <Compile Include="DepthFirstIterator.cs" />
     <Compile Include="ElementCounterVisitor.cs" />
     <Compile Include="FocusState.cs" />
